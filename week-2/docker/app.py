@@ -6,7 +6,6 @@ app = Flask(__name__)
 
 @app.route('/health')
 def health_check():
-    # Basic logic: Check disk space and return "Healthy"
     total, used, free = shutil.disk_usage("/")
     return jsonify({
         "status": "Healthy",
