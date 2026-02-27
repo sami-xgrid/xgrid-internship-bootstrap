@@ -4,7 +4,7 @@
 set -e # Exit immediately if a command fails
 
 # Check for dependencies
-for cmd in jq bc; do
+for cmd in jq; do
     if ! command -v $cmd &> /dev/null; then
         echo "{\"error\": \"$cmd is not installed.\"}"
         exit 1
