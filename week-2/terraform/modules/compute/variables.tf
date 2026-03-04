@@ -14,17 +14,7 @@ variable "key_pair_name" {
 }
 
 variable "tags" {
-  description = "Standard tags for Xgrid resources"
-  type        = map(string)
-  default     = {
-    app         = "EC2-SG-Module"
-    created-by  = "Terraform"
-    environment = "XLDP - Dev"
-    project     = "Module_Name - XLDP"
-    owner       = "abdul.sami@xgrid.co"
-    creator     = "abdul.sami@xgrid.co"
-    team        = "Firebirds"
-  }
+  type = map(string)
 }
 
 variable "allowed_ip" {
