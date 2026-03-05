@@ -3,6 +3,7 @@ resource "aws_cloudwatch_log_group" "wp_logs" {
   retention_in_days = 1
 }
 
+# Task definition references the execution role for ECR/CloudWatch access and injects RDS creds via env vars
 resource "aws_ecs_task_definition" "wordpress" {
   family                   = "wordpress-task"
   network_mode             = "awsvpc"
@@ -17,8 +18,8 @@ resource "aws_ecs_task_definition" "wordpress" {
   }
 
   container_definitions = jsonencode([{
-    name  = "wordpress"
-    image = "wordpress:latest"
+    name      = "wordpress"
+    image     = "wordpress:latest"
     essential = true
     portMappings = [{
       containerPort = 80
@@ -46,6 +47,7 @@ resource "aws_ecs_task_definition" "wordpress" {
   }])
 }
 
+# Runs 2 tasks across private subnets, registered to the ALB target group for traffic distribution
 resource "aws_ecs_service" "wordpress" {
   name            = "wordpress-service"
   cluster         = var.cluster_id

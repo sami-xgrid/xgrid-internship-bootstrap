@@ -1,3 +1,10 @@
+# VPC, subnets, and security groups — everything else depends on this
+module "networking" {
+  source   = "./modules/networking"
+  vpc_cidr = "10.0.0.0/16"
+}
+
+# ALB, ECS cluster, ASG, and IAM roles — wordpress tasks run on top of this
 module "compute" {
   source             = "./modules/compute"
   vpc_id             = module.networking.vpc_id
@@ -7,11 +14,7 @@ module "compute" {
   alb_sg_id          = module.networking.alb_sg_id
 }
 
-module "networking" {
-  source   = "./modules/networking"
-  vpc_cidr = "10.0.0.0/16"
-}
-
+# RDS instance isolated in private subnets, only reachable from ECS SG
 module "database" {
   source             = "./modules/database"
   vpc_id             = module.networking.vpc_id
@@ -21,6 +24,7 @@ module "database" {
   db_password        = var.db_password
 }
 
+# ECS task definition and service — wires the cluster, ALB target group, and RDS together
 module "wordpress" {
   source             = "./modules/wordpress"
   cluster_id         = module.compute.cluster_id
@@ -29,9 +33,8 @@ module "wordpress" {
   private_subnet_ids = module.networking.private_subnets
   ecs_sg_id          = module.networking.ecs_sg_id
 
-  # Connect to your DB module
   db_host     = module.database.db_endpoint
-  db_user     = var.db_username # Assuming you have these variables in root
+  db_user     = var.db_username
   db_password = var.db_password
   db_name     = "wordpressdb"
 }

@@ -1,9 +1,7 @@
-# --- 1. Fetch Latest ECS-Optimized AMI ---
 data "aws_ssm_parameter" "ecs_ami" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
 }
 
-# --- 2. ECS Cluster & Capacity Provider ---
 resource "aws_ecs_cluster" "main" {
   name = "wordpress-ha-cluster"
 }
@@ -19,7 +17,7 @@ resource "aws_ecs_capacity_provider" "main" {
       maximum_scaling_step_size = 10
       minimum_scaling_step_size = 1
       status                    = "ENABLED"
-      target_capacity           = 80 # Keep 20% buffer
+      target_capacity           = 80
     }
   }
 }
@@ -34,12 +32,11 @@ resource "aws_ecs_cluster_capacity_providers" "main" {
   }
 }
 
-# --- 3. Auto Scaling Group & Launch Template ---
 resource "aws_launch_template" "main" {
   name_prefix   = "wordpress-ecs-template"
   image_id      = data.aws_ssm_parameter.ecs_ami.value
   instance_type = "t3.micro"
-  
+
   iam_instance_profile {
     name = aws_iam_instance_profile.ecs_node_profile.name
   }
@@ -63,8 +60,8 @@ resource "aws_autoscaling_group" "main" {
   vpc_zone_identifier   = var.private_subnet_ids
   min_size              = 1
   max_size              = 4
-  desired_capacity      = 2 # High Availability!
-  protect_from_scale_in = true # Required for managed_termination_protection
+  desired_capacity      = 2
+  protect_from_scale_in = true
 
   launch_template {
     id      = aws_launch_template.main.id
@@ -78,7 +75,6 @@ resource "aws_autoscaling_group" "main" {
   }
 }
 
-# --- 4. Application Load Balancer ---
 resource "aws_lb" "main" {
   name               = "wordpress-alb"
   internal           = false
@@ -92,10 +88,10 @@ resource "aws_lb_target_group" "main" {
   port        = 80
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
-  target_type = "ip" # Required for awsvpc networking mode
+  target_type = "ip"
 
   health_check {
-    path = "/"
+    path    = "/"
     matcher = "200-399"
   }
 }
