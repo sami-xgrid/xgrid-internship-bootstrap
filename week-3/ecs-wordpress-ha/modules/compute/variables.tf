@@ -22,3 +22,15 @@ variable "alb_sg_id" {
   description = "Security Group ID for the Load Balancer"
   type        = string
 }
+
+variable "instance_type" {
+  description = "EC2 instance type for ECS nodes"
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "launch_template_name" {
+  description = "Name prefix for the launch template"
+  type        = string
+  default     = "wordpress-ecs-template"
+}

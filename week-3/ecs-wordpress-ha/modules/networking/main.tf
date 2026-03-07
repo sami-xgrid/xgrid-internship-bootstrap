@@ -9,19 +9,19 @@ module "vpc" {
   cidr = var.vpc_cidr
 
   azs             = slice(data.aws_availability_zones.available.names, 0, 2)
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
+  private_subnets = var.private_subnets
+  public_subnets  = var.public_subnets
 
   enable_nat_gateway   = true
-  single_nat_gateway   = false
+  single_nat_gateway   = true
   enable_dns_hostnames = true
   enable_dns_support   = true
 }
 
 # ALB Security Group
 resource "aws_security_group" "alb_sg" {
-  name        = "wordpress-alb-sg"
-  vpc_id      = module.vpc.vpc_id
+  name   = "wordpress-alb-sg"
+  vpc_id = module.vpc.vpc_id
 
   ingress {
     from_port   = 80
@@ -39,8 +39,8 @@ resource "aws_security_group" "alb_sg" {
 
 # ECS instances only accept traffic from the ALB, not directly from the internet
 resource "aws_security_group" "ecs_sg" {
-  name        = "wordpress-ecs-sg"
-  vpc_id      = module.vpc.vpc_id
+  name   = "wordpress-ecs-sg"
+  vpc_id = module.vpc.vpc_id
 
   ingress {
     from_port       = 80

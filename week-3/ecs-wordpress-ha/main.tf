@@ -1,7 +1,9 @@
 # VPC, subnets, and security groups — everything else depends on this
 module "networking" {
-  source   = "./modules/networking"
-  vpc_cidr = "10.0.0.0/16"
+  source          = "./modules/networking"
+  vpc_cidr        = var.vpc_cidr
+  public_subnets  = var.public_subnets
+  private_subnets = var.private_subnets
 }
 
 # ALB, ECS cluster, ASG, and IAM roles — wordpress tasks run on top of this
@@ -33,8 +35,8 @@ module "wordpress" {
   private_subnet_ids = module.networking.private_subnets
   ecs_sg_id          = module.networking.ecs_sg_id
 
-  db_host     = module.database.db_endpoint
-  db_user     = var.db_username
-  db_password = var.db_password
-  db_name     = "wordpressdb"
+  db_host_arn     = module.database.db_host_arn
+  db_user_arn     = module.database.db_user_arn
+  db_password_arn = module.database.db_password_arn
+  db_name         = "wordpressdb"
 }

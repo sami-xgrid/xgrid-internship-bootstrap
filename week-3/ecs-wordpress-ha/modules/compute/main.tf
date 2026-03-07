@@ -11,7 +11,7 @@ resource "aws_ecs_capacity_provider" "main" {
 
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.main.arn
-    managed_termination_protection = "ENABLED"
+    managed_termination_protection = "DISABLED"
 
     managed_scaling {
       maximum_scaling_step_size = 10
@@ -33,9 +33,9 @@ resource "aws_ecs_cluster_capacity_providers" "main" {
 }
 
 resource "aws_launch_template" "main" {
-  name_prefix   = "wordpress-ecs-template"
+  name_prefix   = var.launch_template_name
   image_id      = data.aws_ssm_parameter.ecs_ami.value
-  instance_type = "t3.micro"
+  instance_type = var.instance_type
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ecs_node_profile.name
@@ -45,7 +45,8 @@ resource "aws_launch_template" "main" {
   #!/bin/bash
   echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
   mkdir -p /var/www/wordpress_data
-  chmod 777 /var/www/wordpress_data
+  chown -R 33:33 /var/www/wordpress_data
+  chmod 755 /var/www/wordpress_data
   EOF
   )
 
@@ -58,7 +59,7 @@ resource "aws_launch_template" "main" {
 resource "aws_autoscaling_group" "main" {
   name                  = "wordpress-asg"
   vpc_zone_identifier   = var.private_subnet_ids
-  min_size              = 1
+  min_size              = 2
   max_size              = 4
   desired_capacity      = 2
   protect_from_scale_in = true
@@ -92,7 +93,7 @@ resource "aws_lb_target_group" "main" {
 
   health_check {
     path    = "/"
-    matcher = "200-399"
+    matcher = "200"
   }
 }
 

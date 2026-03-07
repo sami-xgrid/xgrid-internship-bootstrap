@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_log_group" "wp_logs" {
   name              = "/ecs/wordpress"
-  retention_in_days = 1
+  retention_in_days = 30
 }
 
 # Task definition references the execution role for ECR/CloudWatch access and injects RDS creds via env vars
@@ -8,8 +8,8 @@ resource "aws_ecs_task_definition" "wordpress" {
   family                   = "wordpress-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["EC2"]
-  cpu                      = "512"
-  memory                   = "512"
+  cpu                      = var.container_cpu
+  memory                   = var.container_memory
   execution_role_arn       = var.execution_role_arn
 
   volume {
@@ -26,10 +26,12 @@ resource "aws_ecs_task_definition" "wordpress" {
       hostPort      = 80
       protocol      = "tcp"
     }]
+    secrets = [
+      { name = "WORDPRESS_DB_HOST", valueFrom = var.db_host_arn },
+      { name = "WORDPRESS_DB_USER", valueFrom = var.db_user_arn },
+      { name = "WORDPRESS_DB_PASSWORD", valueFrom = var.db_password_arn },
+    ]
     environment = [
-      { name = "WORDPRESS_DB_HOST", value = var.db_host },
-      { name = "WORDPRESS_DB_USER", value = var.db_user },
-      { name = "WORDPRESS_DB_PASSWORD", value = var.db_password },
       { name = "WORDPRESS_DB_NAME", value = var.db_name }
     ]
     mountPoints = [{
