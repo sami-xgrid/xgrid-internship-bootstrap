@@ -1,13 +1,3 @@
-variable "environment" {
-  description = "The environment for which the database is being provisioned (e.g., dev, staging, prod)"
-  type        = string
-}
-
-variable "vpc_id" {
-  description = "The ID of the VPC where the database will be provisioned"
-  type        = string
-}
-
 variable "db_subnet_group_ids" {
   description = "List of subnet IDs for the database subnet group"
   type        = list(string)
@@ -46,4 +36,9 @@ variable "db_engine_version" {
 variable "db_instance_class" {
   description = "The instance class for the database (e.g., db.t3.medium)"
   type        = string
+}
+
+variable "tags" {
+  description = "Standard tags for Xgrid resources"
+  type        = map(string)
 }

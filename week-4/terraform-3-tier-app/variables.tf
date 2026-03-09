@@ -3,11 +3,6 @@ variable "aws_region" {
   type        = string
 }
 
-variable "environment" {
-  description = "The environment for which resources are being provisioned"
-  type        = string
-}
-
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
   type        = string
@@ -51,4 +46,18 @@ variable "db_engine_version" {
 variable "db_instance_class" {
   description = "The instance class for the database"
   type        = string
+}
+
+variable "tags" {
+  description = "Standard tags for Xgrid resources"
+  type        = map(string)
+  default = {
+    app         = "three-tier-app"
+    created-by  = "Terraform"
+    environment = "XLDP - Dev"
+    project     = "Module_Name - XLDP"
+    owner       = "abdul.sami@xgrid.co"
+    creator     = "abdul.sami@xgrid.co"
+    team        = "Firebirds"
+  }
 }

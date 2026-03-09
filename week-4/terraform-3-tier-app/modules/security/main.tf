@@ -1,5 +1,5 @@
 resource "aws_security_group" "web" {
-  name_prefix = "${var.environment}-web-sg-"
+  name_prefix = "${var.tags["app"]}-web-sg-"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -14,10 +14,12 @@ resource "aws_security_group" "web" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = var.tags
 }
 
 resource "aws_security_group" "app" {
-  name_prefix = "${var.environment}-app-sg-"
+  name_prefix = "${var.tags["app"]}-app-sg-"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -32,10 +34,12 @@ resource "aws_security_group" "app" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = var.tags
 }
 
 resource "aws_security_group" "db" {
-  name_prefix = "${var.environment}-db-sg-"
+  name_prefix = "${var.tags["app"]}-db-sg-"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -44,4 +48,6 @@ resource "aws_security_group" "db" {
     protocol        = "tcp"
     security_groups = [aws_security_group.app.id]
   }
+
+  tags = var.tags
 }
