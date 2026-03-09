@@ -63,3 +63,11 @@ The architecture is optimized to remain within the AWS Free Tier for 12 months.
 * **Resource Conflict (EntityAlreadyExists):** If resources were created during a crashed session but not recorded in the `.tfstate`, use `terraform import <module.path.resource> <aws_resource_id>` to re-sync the state.
 * **Database Connection Error:** Verify that the RDS Security Group allows inbound traffic on port 3306 from the ECS Security Group.
 
+## 6. GenAI Utilization & Reflection
+
+* **Tool(s) Used:** Gemini 3 Flash and Github Copilot.
+* **Specific Prompts:** * "How to resolve EntityAlreadyExists error for IAM roles in Terraform after a crash?"
+    * "How to import an existing AWS RDS instance into Terraform state?"
+    * "Troubleshooting 503 Service Unavailable for WordPress on ECS behind an ALB."
+* **Influence on Solution:** Gemini provided the recovery commands (terraform import) needed to resync the state file after a system crash. GitHub Copilot was utilized to verify the project structure, cross-reference variable definitions across modules, and ensure consistency in the `.tf` files.
+* **Reflection:** These tools significantly saved time by providing immediate syntax for state recovery. Copilot specifically reduced manual overhead by suggesting boilerplate code and catching variable naming inconsistencies during the setup phase.
