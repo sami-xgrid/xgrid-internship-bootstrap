@@ -1,0 +1,4 @@
+terraform-3-tier-app/*.tfstate
+terraform-3-tier-app/*.tfstate.backup
+terraform-3-tier-app/*.tfvars
+terraform-3-tier-app/.terraform/
