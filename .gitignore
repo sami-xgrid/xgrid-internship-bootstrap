@@ -1,4 +1,0 @@
-week-2/terraform/*.tfstate
-week-2/terraform/*.tfstate.backup
-week-2/terraform/*.tfvars
-week-2/terraform/.terraform/
