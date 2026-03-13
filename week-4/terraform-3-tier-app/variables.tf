@@ -3,6 +3,11 @@ variable "aws_region" {
   type        = string
 }
 
+variable "ami_id" {
+  description = "The AMI ID for the EC2 instances"
+  type        = string
+}
+
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
   type        = string
@@ -55,7 +60,7 @@ variable "tags" {
     app         = "three-tier-app"
     created-by  = "Terraform"
     environment = "XLDP - Dev"
-    project     = "Module_Name - XLDP"
+    project     = "Three-Tier Web App - XLDP"
     owner       = "abdul.sami@xgrid.co"
     creator     = "abdul.sami@xgrid.co"
     team        = "Firebirds"

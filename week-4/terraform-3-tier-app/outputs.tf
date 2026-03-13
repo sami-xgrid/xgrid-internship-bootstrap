@@ -33,3 +33,10 @@ output "db_cluster_endpoint" {
   value       = module.database.cluster_endpoint
 }
 
+output "frontend_public_ip" {
+  value = module.compute.frontend_public_ip
+}
+
+output "backend_private_ip" {
+  value = module.compute.backend_private_ip
+}

@@ -12,6 +12,7 @@ resource "aws_rds_cluster" "aurora" {
   database_name                       = var.db_name
   master_username                     = var.db_user
   manage_master_user_password         = true
+  enable_http_endpoint                = true
   db_subnet_group_name                = aws_db_subnet_group.aurora.name
   vpc_security_group_ids              = [var.db_security_group]
   skip_final_snapshot                 = true
