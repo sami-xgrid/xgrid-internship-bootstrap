@@ -41,14 +41,9 @@ resource "aws_launch_template" "main" {
     name = aws_iam_instance_profile.ecs_node_profile.name
   }
 
-  user_data = base64encode(<<-EOF
-  #!/bin/bash
-  echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
-  mkdir -p /var/www/wordpress_data
-  chown -R 33:33 /var/www/wordpress_data
-  chmod 755 /var/www/wordpress_data
-  EOF
-  )
+  user_data = base64encode(templatefile("${path.module}/scripts/user_data.sh", {
+    cluster_name = aws_ecs_cluster.main.name
+  }))
 
   network_interfaces {
     associate_public_ip_address = false

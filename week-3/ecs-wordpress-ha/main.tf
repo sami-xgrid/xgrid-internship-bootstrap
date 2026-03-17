@@ -23,7 +23,6 @@ module "database" {
   private_subnet_ids = module.networking.private_subnets
   ecs_sg_id          = module.networking.ecs_sg_id
   db_username        = var.db_username
-  db_password        = var.db_password
 }
 
 # ECS task definition and service — wires the cluster, ALB target group, and RDS together
