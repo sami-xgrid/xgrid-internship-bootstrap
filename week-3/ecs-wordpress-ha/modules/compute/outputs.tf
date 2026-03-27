@@ -13,6 +13,11 @@ output "target_group_arn" {
   value       = aws_lb_target_group.main.arn
 }
 
+output "target_group_arn_suffix" {
+  description = "The ARN suffix of the ALB Target Group (used for CloudWatch dimensions)"
+  value       = replace(aws_lb_target_group.main.arn, "arn:aws:elasticloadbalancing:[^:]+:[0-9]+:targetgroup/", "")
+}
+
 output "alb_dns_name" {
   description = "The DNS name of the Load Balancer (Your future WordPress URL)"
   value       = aws_lb.main.dns_name
@@ -21,4 +26,9 @@ output "alb_dns_name" {
 output "ecs_task_execution_role_arn" {
   description = "The ARN of the ECS task execution role"
   value       = aws_iam_role.ecs_task_execution_role.arn
+}
+
+output "alb_arn_suffix" {
+  description = "The ARN suffix of the ALB (used for CloudWatch dimensions)"
+  value       = replace(aws_lb.main.arn, "arn:aws:elasticloadbalancing:[^:]+:[0-9]+:loadbalancer/", "")
 }
