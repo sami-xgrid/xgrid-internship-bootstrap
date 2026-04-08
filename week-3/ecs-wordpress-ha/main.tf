@@ -39,3 +39,13 @@ module "wordpress" {
   db_password_arn = module.database.db_password_arn
   db_name         = "wordpressdb"
 }
+
+# CloudWatch monitoring and SNS alerts for ALB 5XX errors and RDS CPU utilization
+module "monitoring" {
+  source                  = "./modules/monitoring"
+  alert_email             = var.alert_email
+  alb_arn_suffix          = module.compute.alb_arn_suffix
+  target_group_arn_suffix = module.compute.target_group_arn_suffix
+  ecs_cluster_name        = module.compute.cluster_name
+  rds_instance_id         = module.database.db_instance_id
+}

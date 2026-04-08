@@ -19,3 +19,8 @@ variable "public_subnets" {
 variable "private_subnets" {
   type = list(string)
 }
+
+variable "alert_email" {
+  description = "Email address for receiving CloudWatch SNS alerts"
+  type        = string
+}
