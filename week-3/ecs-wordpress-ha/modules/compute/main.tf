@@ -42,7 +42,10 @@ resource "aws_launch_template" "main" {
   }
 
   user_data = base64encode(templatefile("${path.module}/scripts/user_data.sh", {
-    cluster_name = aws_ecs_cluster.main.name
+    cluster_name      = aws_ecs_cluster.main.name
+    prometheus_config = file("${path.cwd}/../../week-6/sre-stack/prometheus.yml")
+    docker_compose    = file("${path.cwd}/../../week-6/sre-stack/docker-compose.yml")
+    report_script     = file("${path.cwd}/../../week-6/sre-stack/daily_report.py")
   }))
 
   network_interfaces {
