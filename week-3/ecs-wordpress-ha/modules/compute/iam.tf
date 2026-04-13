@@ -88,7 +88,10 @@ resource "aws_iam_role_policy" "ecs_list_tasks" {
       {
         Effect   = "Allow"
         Action   = ["ecs:ListTasks", "ecs:DescribeTasks"]
-        Resource = "arn:aws:ecs:ap-south-1:959157916756:cluster/wordpress-ha-cluster"
+        Resource = [
+          "arn:aws:ecs:ap-south-1:959157916756:cluster/wordpress-ha-cluster",
+          "arn:aws:ecs:ap-south-1:959157916756:container-instance/wordpress-ha-cluster/*"
+        ]
       }
     ]
   })
