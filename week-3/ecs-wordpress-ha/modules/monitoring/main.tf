@@ -35,9 +35,9 @@ resource "aws_cloudwatch_metric_alarm" "high_5xx_errors" {
   evaluation_periods  = 1
   metric_name         = "HTTPCode_Target_5XX_Count"
   namespace           = "AWS/ApplicationELB"
-  period              = 300 
+  period              = 300
   statistic           = "Sum"
-  threshold           = 5 
+  threshold           = 5
   alarm_description   = "SLO: Error Rate exceeded threshold."
   alarm_actions       = [aws_sns_topic.alerts.arn]
 
@@ -56,9 +56,9 @@ resource "aws_cloudwatch_metric_alarm" "high_latency" {
   evaluation_periods  = 2
   metric_name         = "TargetResponseTime"
   namespace           = "AWS/ApplicationELB"
-  period              = 60    
-  extended_statistic  = "p95" 
-  threshold           = 0.5   
+  period              = 60
+  extended_statistic  = "p95"
+  threshold           = 0.5
   alarm_description   = "SLO: 95th percentile latency > 500ms."
   alarm_actions       = [aws_sns_topic.alerts.arn]
 

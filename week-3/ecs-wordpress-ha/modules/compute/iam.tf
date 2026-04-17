@@ -30,6 +30,15 @@ resource "aws_iam_instance_profile" "ecs_node_profile" {
   role = aws_iam_role.ecs_node_role.name
 }
 
+data "aws_iam_policy" "ssm_core_policy" {
+  name = "AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_node_ssm_policy" {
+  role       = aws_iam_role.ecs_node_role.name
+  policy_arn = data.aws_iam_policy.ssm_core_policy.arn
+}
+
 # --- ECS Task Execution Role ---
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "wordpress-task-execution-role"
@@ -63,6 +72,43 @@ resource "aws_iam_role_policy" "ecs_secrets_policy" {
           "arn:aws:ssm:ap-south-1:959157916756:parameter/wordpress/*",
           "arn:aws:secretsmanager:ap-south-1:959157916756:secret:rds!db-*"
         ]
+      }
+    ]
+  })
+}
+
+# Policy to allow the EC2 instance to query ECS cluster status
+resource "aws_iam_role_policy" "ecs_list_tasks" {
+  name = "wordpress-ecs-list-tasks-policy"
+  role = aws_iam_role.ecs_node_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["ecs:ListTasks", "ecs:DescribeTasks"]
+        Resource = [
+          "arn:aws:ecs:ap-south-1:959157916756:cluster/wordpress-ha-cluster",
+          "arn:aws:ecs:ap-south-1:959157916756:container-instance/wordpress-ha-cluster/*"
+        ]
+      }
+    ]
+  })
+}
+
+# Allows the Python script on the EC2 host to fetch CloudWatch logs
+resource "aws_iam_role_policy" "ec2_logs_read" {
+  name = "wordpress-ec2-logs-read-policy"
+  role = aws_iam_role.ecs_node_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["logs:FilterLogEvents", "logs:DescribeLogStreams"]
+        Resource = "arn:aws:logs:ap-south-1:959157916756:log-group:/ecs/wordpress:*"
       }
     ]
   })
